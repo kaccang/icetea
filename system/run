@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# URL file ZIP yang akan diunduh
+link="https://github.com/kaccang/estea/raw/refs/heads/main/system/menu.zip"
+
+# Meminta pengguna memasukkan password
+read -sp "Masukkan password: " pw
+echo
+
+# Simpan password ke file /root/.pwd
+echo "$pw" > /root/.pwd
+
+# Folder sementara untuk ekstraksi
+tmp_dir="/root/.tmp"
+mkdir -p "$tmp_dir"
+
+# Unduh file ZIP
+wget -O "$tmp_dir/exe.zip" "$link" >/dev/null 2>&1
+
+# Ekstrak file ZIP dengan password yang dimasukkan
+unzip -P "$pw" "$tmp_dir/exe.zip" -d "$tmp_dir" >/dev/null 2>&1
+
+# Cek apakah unzip berhasil
+if [ $? -eq 0 ]; then
+    echo "Ekstraksi berhasil!"
+    
+    # Pastikan file exe.sh ada sebelum dieksekusi
+    if [ -f "$tmp_dir/exe.sh" ]; then
+        chmod +x "$tmp_dir/exe.sh"
+        bash "$tmp_dir/exe.sh"
+    else
+        echo "File tidak ditemukan!"
+        exit 1
+    fi
+else
+    echo "Gagal mengekstrak file!"
+    exit 1
+fi
+
+# Bersihkan file sementara
+rm -rf "$tmp_dir"
