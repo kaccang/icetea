@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # URL file ZIP yang akan diunduh
-link="https://github.com/kaccang/estea/raw/refs/heads/main/system/menu.zip"
+link="https://github.com/kaccang/estea/raw/refs/heads/main/system/exe.zip"
 
 # Meminta pengguna memasukkan password
 read -sp "Masukkan password: " pw
