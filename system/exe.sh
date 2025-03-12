@@ -75,10 +75,6 @@ chmod +x /usr/local/bin/xray
 wget -O /usr/local/share/xray/geosite.dat https://github.com/v2fly/domain-list-community/releases/latest/download/dlc.dat
 wget -O /usr/local/share/xray/geoip.dat https://github.com/v2fly/geoip/releases/latest/download/geoip.dat
 
-touch /var/log/xray/access.log /var/log/xray/error.log
-chown nobody:nogroup /var/log/xray/access.log /var/log/xray/error.log
-chmod 644 /var/log/xray/access.log /var/log/xray/error.log
-
 # Bersihkan file sementara
 rm -rf /tmp/xray /tmp/xray-linux.zip
 
@@ -92,14 +88,17 @@ fi
 
 # Konfigurasi nginx dan Xray
 rm /etc/nginx/nginx.conf
-wget -O /etc/nginx/nginx.conf "${LINK}system/nginx.conf"
+wget -O /etc/nginx/nginx.conf "https://github.com/kaccang/icetea/raw/refs/heads/main/system/nginx.conf"
 
 sed -i "s/server_name example.com;/server_name $domain;/" /etc/nginx/nginx.conf
 systemctl reload nginx
 
-rm -f /etc/xray/config.json
-wget -O /mnt/xray/config.json "${LINK}system/config.json"
-
+if [ ! -s /mnt/xray/config.json ]; then
+    echo "Config kosong, mengunduh ulang..."
+    wget -O /mnt/xray/config.json "https://github.com/kaccang/icetea/raw/refs/heads/main/system/config.json"
+else
+    echo "Config sudah ada dan tidak kosong."
+fi
 # Tambahkan crontab
 (crontab -l; echo "*/3 * * * * /usr/bin/cek-s3fs") | crontab -
 (crontab -l; echo "0 1 * * * /usr/bin/bckp") | crontab -
@@ -120,6 +119,24 @@ LimitNOFILE=1000000
 [Install]
 WantedBy=multi-user.target
 EOF
+
+# menu bash
+mkdir -p /root/.tmp/
+wget -O /root/.tmp/menu.zip "https://github.com/kaccang/icetea/raw/refs/heads/main/system/menu.zip"
+unzip /root/.tmp/menu.zip -d /root/.tmp/
+chmod +x /root/.tmp/*
+mv /root/.tmp/* /usr/bin/ # pindahkan semua ke bin 
+
+# Ensure menu runs automatically after login
+if ! grep -q "menu" ~/.bashrc; then
+    echo "/usr/bin/menu" >> ~/.bashrc
+fi
+
+
+mkdir -p /var/log/xray
+touch /var/log/xray/access.log /var/log/xray/error.log
+chown -R www-data:www-data /var/log/xray
+chmod -R 644 /var/log/xray/*
 
 # Reload systemd dan mulai layanan
 systemctl daemon-reload
