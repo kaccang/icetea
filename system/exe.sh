@@ -36,12 +36,12 @@ s3fs bersama /mnt/xray -o passwd_file=/root/.s3fs -o url=https://cd54180361383ef
 
 echo "rmrS3Z5jWm3DCVIr:iFZm2McevWvL9nbat0kwlwIftbtVXWKy65peJjbN" > /root/.tebi
 chmod 600 /root/.tebi
-s3fs dl.biskuat.com.tr /mnt/html fuse _netdev,passwd_file=/root/.tebi,url=https://s3.tebi.io,use_path_request_style 0 0
+s3fs dl.biskuat.com.tr /mnt/html -o _netdev -o passwd_file=/root/.tebi -o url=https://s3.tebi.io -o use_path_request_style -o allow_other
 
 # Tambahkan mount ke fstab
 cat <<EOF >> /etc/fstab
 s3fs#bersama /mnt/xray fuse _netdev,allow_other,nonempty,use_path_request_style,url=https://cd54180361383ef16d56a4dced8ad398.r2.cloudflarestorage.com,passwd_file=/root/.s3fs,endpoint=us-east-1 0 0
-s3fs#dl.biskuat.com.tr /mnt/html fuse _netdev,passwd_file=/root/.tebi,url=https://s3.tebi.io,use_path_request_style 0 0
+s3fs#dl.biskuat.com.tr /mnt/html fuse _netdev,passwd_file=/root/.tebi,url=https://s3.tebi.io,use_path_request_style,allow_other 0 0
 EOF
 # update mnt
 ls /mnt/xray/ > /dev/null 2>&1
