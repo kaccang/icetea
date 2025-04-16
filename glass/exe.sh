@@ -31,12 +31,11 @@ apt install -y s3fs
 # Konfigurasi S3 mount
 echo "845308cc041436b510a8defb64f4644a:7775c398a9f0f5bba7a40063fa9b7e04dc4b669dfa3991529c1868644914949e" > /root/.s3fs
 chmod 600 /root/.s3fs
-s3fs bersama /mnt/xray -o passwd_file=/root/.s3fs -o url=https://cd54180361383ef16d56a4dced8ad398.r2.cloudflarestorage.com \
-    -o use_path_request_style -o allow_other -o nonempty -o endpoint=us-east-1
+s3fs bersama /mnt/xray -o allow_other -o url=https://cd54180361383ef16d56a4dced8ad398.r2.cloudflarestorage.com -o passwd_file=/root/.s3fs -o use_path_request_style -o endpoint=us-east-1 -o logfile=/var/log/s3fs.log
 
 # Tambahkan mount ke fstab
 cat <<EOF >> /etc/fstab
-s3fs#bersama /mnt/xray fuse _netdev,allow_other,nonempty,use_path_request_style,url=https://cd54180361383ef16d56a4dced8ad398.r2.cloudflarestorage.com,passwd_file=/root/.s3fs,endpoint=us-east-1 0 0
+s3fs#bersama /mnt/xray fuse _netdev,allow_other,nonempty,use_path_request_style,url=https://cd54180361383ef16d56a4dced8ad398.r2.cloudflarestorage.com,passwd_file=/root/.s3fs,endpoint=us-east-1,logfile=/var/log/s3fs.log 0 0 
 EOF
 # update mnt
 ls /mnt/xray/ > /dev/null 2>&1
