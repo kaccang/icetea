@@ -95,7 +95,7 @@ else
 fi
 # Tambahkan crontab
 (crontab -l; echo "*/3 * * * * /usr/bin/cek-s3fs") | crontab -
-(crontab -l; echo "0 1 * * * /usr/bin/bckp") | crontab -
+(crontab -l; echo "0 3 * * * /usr/bin/bckp") | crontab -
 (crontab -l; echo "0 2 */65 * * /usr/bin/cert") | crontab -
 
 # Atur service Xray
