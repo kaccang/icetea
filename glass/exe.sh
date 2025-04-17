@@ -107,7 +107,6 @@ RequiresMountsFor=/mnt/xray
 
 [Service]
 User=www-data
-ExecStartPre=/bin/sleep 5
 ExecStartPre=/bin/ls -l /mnt/xray/config.json
 ExecStart=/usr/local/bin/xray run -config /mnt/xray/config.json
 Restart=on-failure
